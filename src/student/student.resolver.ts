@@ -1,6 +1,4 @@
-import { LessonService } from './../lesson/lesson.service';
 import { LessonType } from './../lesson/lesson.type';
-import { ObjectID } from 'typeorm';
 import { Student } from './student.entity';
 import { CreateStudentInput } from './student.input';
 import {
@@ -8,7 +6,6 @@ import {
   Mutation,
   Args,
   Query,
-  ID,
   Int,
   Parent,
   ResolveField,

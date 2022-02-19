@@ -1,7 +1,7 @@
 import { LessonService } from './../lesson/lesson.service';
 import { Lesson } from './../lesson/lesson.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, ObjectID } from 'typeorm';
+import { Repository } from 'typeorm';
 import { Student } from './student.entity';
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { CreateStudentInput } from './student.input';
@@ -10,6 +10,7 @@ import { CreateStudentInput } from './student.input';
 export class StudentService {
   constructor(
     @InjectRepository(Student) private studentRepository: Repository<Student>,
+    @Inject(forwardRef(() => LessonService))
     private lessonService: LessonService,
   ) {}
 

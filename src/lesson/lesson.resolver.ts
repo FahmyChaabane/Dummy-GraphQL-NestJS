@@ -1,8 +1,6 @@
 import { AssignStudentLessonInput } from './assign-course-lesson.input';
-import { StudentService } from './../student/student.service';
 import { StudentType } from './../student/student.type';
 import { CreateLessonInput } from './lesson.input';
-import { ObjectID } from 'typeorm';
 import { Lesson } from './lesson.entity';
 import { LessonService } from './lesson.service';
 import { LessonType } from './lesson.type';
