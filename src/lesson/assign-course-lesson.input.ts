@@ -1,9 +1,10 @@
+import { ObjectID } from 'typeorm';
 import { Field, ID, InputType } from '@nestjs/graphql';
 
 @InputType()
 export class AssignStudentLessonInput {
   @Field(() => ID)
-  lessonId: number;
+  lessonId: ObjectID;
   @Field(() => ID)
-  studentId: number;
+  studentId: ObjectID;
 }

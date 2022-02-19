@@ -11,12 +11,12 @@ import {
 
 @Entity()
 export class Student extends BaseEntity {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @ObjectIdColumn()
+  id: ObjectID;
   @Column()
   firstName: string;
   @Column()
   lastName: string;
-  @ManyToMany(() => Lesson, (lesson) => lesson.students)
-  lessons: Lesson[];
+  @Column({ default: [] })
+  lessons: ObjectID[];
 }

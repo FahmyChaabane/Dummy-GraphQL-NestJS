@@ -12,15 +12,14 @@ import {
 
 @Entity()
 export class Lesson extends BaseEntity {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @ObjectIdColumn()
+  id: ObjectID;
   @Column()
   name: string;
   @Column()
   startDate: string;
   @Column()
   endDate: string;
-  @ManyToMany(() => Student, (student) => student.lessons)
-  @JoinTable()
-  students: Student[];
+  @Column({ default: [] })
+  students: ObjectID[];
 }

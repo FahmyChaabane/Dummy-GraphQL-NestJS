@@ -1,3 +1,5 @@
+import { Student } from './../student/student.entity';
+import { ObjectID } from 'typeorm';
 import { AssignStudentLessonInput } from './assign-course-lesson.input';
 import { StudentType } from './../student/student.type';
 import { CreateLessonInput } from './lesson.input';
@@ -24,7 +26,7 @@ export class LessonResolver {
   }
 
   @Query((returns) => LessonType)
-  async lesson(@Args('id', { type: () => ID }) id: number): Promise<Lesson> {
+  async lesson(@Args('id', { type: () => ID }) id: ObjectID): Promise<Lesson> {
     return await this.lessonService.getLesson(id);
   }
 
@@ -46,7 +48,7 @@ export class LessonResolver {
   }
 
   @ResolveField('students', (returns) => [StudentType])
-  async students(@Parent() lesson: Lesson) {
+  async students(@Parent() lesson: Lesson): Promise<Student[]> {
     const { id } = lesson;
     return await this.lessonService.getStudentsForLesson(id);
   }

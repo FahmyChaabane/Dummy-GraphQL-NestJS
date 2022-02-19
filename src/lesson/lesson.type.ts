@@ -1,10 +1,11 @@
+import { ObjectID } from 'typeorm';
 import { StudentType } from './../student/student.type';
 import { Field, ID, ObjectType } from '@nestjs/graphql';
 
 @ObjectType('Lesson')
 export class LessonType {
   @Field(() => ID)
-  id: number;
+  id: ObjectID;
 
   @Field()
   name: string;

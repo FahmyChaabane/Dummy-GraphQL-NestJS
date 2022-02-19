@@ -1,3 +1,5 @@
+import { Lesson } from './../lesson/lesson.entity';
+import { ObjectID } from 'typeorm';
 import { LessonType } from './../lesson/lesson.type';
 import { Student } from './student.entity';
 import { CreateStudentInput } from './student.input';
@@ -6,7 +8,7 @@ import {
   Mutation,
   Args,
   Query,
-  Int,
+  ID,
   Parent,
   ResolveField,
 } from '@nestjs/graphql';
@@ -23,7 +25,9 @@ export class StudentResolver {
   }
 
   @Query((returns) => StudentType)
-  async student(@Args('id', { type: () => Int }) id: number): Promise<Student> {
+  async student(
+    @Args('id', { type: () => ID }) id: ObjectID,
+  ): Promise<Student> {
     return await this.studentService.getStudent(id);
   }
 
@@ -35,7 +39,7 @@ export class StudentResolver {
   }
 
   @ResolveField('lessons', (returns) => [LessonType])
-  async lessons(@Parent() student: Student) {
+  async lessons(@Parent() student: Student): Promise<Lesson[]> {
     const { id } = student;
     return await this.studentService.getLessonsForStudent(id);
   }

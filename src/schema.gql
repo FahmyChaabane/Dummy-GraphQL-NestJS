@@ -21,7 +21,7 @@ type Query {
   allLessons: [Lesson!]!
   lesson(id: ID!): Lesson!
   allStudents: [Student!]!
-  student(id: Int!): Student!
+  student(id: ID!): Student!
 }
 
 type Mutation {
@@ -34,7 +34,7 @@ input CreateLessonInput {
   name: String!
   startDate: String!
   endDate: String!
-  studentIds: [ID!] = []
+  students: [ID!] = []
 }
 
 input AssignStudentLessonInput {

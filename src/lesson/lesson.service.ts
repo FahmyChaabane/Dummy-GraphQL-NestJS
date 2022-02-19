@@ -5,7 +5,7 @@ import { CreateLessonInput } from './lesson.input';
 import { Lesson } from './lesson.entity';
 import { Injectable, Inject, forwardRef } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, ObjectID } from 'typeorm';
 
 @Injectable()
 export class LessonService {
@@ -19,47 +19,52 @@ export class LessonService {
     return await this.lessonRepository.find();
   }
 
-  async getLesson(id: number): Promise<Lesson> {
+  async getLesson(id: ObjectID): Promise<Lesson> {
     return await this.lessonRepository.findOne(id);
   }
 
   async createLesson(createLessonInput: CreateLessonInput): Promise<Lesson> {
-    const { name, startDate, endDate, studentIds } = createLessonInput;
-    const students = studentIds.map(
-      async (id) => await this.studentService.getStudent(id),
-    );
+    const { name, startDate, endDate, students } = createLessonInput;
     const lesson = this.lessonRepository.create({
       name,
       startDate,
       endDate,
-      students: await Promise.all(students),
+      students,
     });
-    return await lesson.save(); // Ariel did: this.lessonRepository.save(lesson)
+    const result = await lesson.save(); // Ariel did: this.lessonRepository.save(lesson)
+    students.forEach(async (studentId) => {
+      const student = await this.studentService.getStudent(studentId);
+      const lessonId = result.id;
+      student.lessons = [...student.lessons, lessonId];
+      await student.save();
+    });
+    return result;
   }
 
-  async getStudentsForLesson(lessonId): Promise<Student[]> {
+  async getStudentsForLesson(lessonId: ObjectID): Promise<Student[]> {
     return await this.studentService.getStudentsForLesson(lessonId);
   }
 
-  async getLessonsForStudent(studentId: number): Promise<Lesson[]> {
-    const query = this.lessonRepository.createQueryBuilder('lesson');
-    query.leftJoinAndSelect('lesson.students', 'student');
-    query.where('student.id = :id', { id: studentId });
-    query.select('lesson');
-    const result = await query.getMany();
-    return result;
+  async getLessonsForStudent(studentId: ObjectID): Promise<Lesson[]> {
+    const student = await this.studentService.getStudent(studentId);
+    const lessons = student.lessons.map(
+      async (lessonId) => await this.getLesson(lessonId),
+    );
+    return await Promise.all(lessons);
   }
 
   async assignCourseToLesson(
     assignStudentLessonInput: AssignStudentLessonInput,
   ): Promise<Lesson> {
     const { lessonId, studentId } = assignStudentLessonInput;
-    const lesson = await this.lessonRepository.findOne(lessonId, {
-      relations: ['students'],
-    });
-    const student = await this.studentService.getStudent(studentId);
 
-    lesson.students = [...lesson.students, student];
+    const lesson = await this.lessonRepository.findOne(lessonId);
+    lesson.students = [...lesson.students, studentId];
+
+    const student = await this.studentService.getStudent(studentId);
+    student.lessons = [...student.lessons, lessonId];
+
+    await student.save();
     return await lesson.save();
   }
 }

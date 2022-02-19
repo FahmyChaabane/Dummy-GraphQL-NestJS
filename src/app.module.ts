@@ -11,14 +11,13 @@ import { StudentModule } from './student/student.module';
 @Module({
   imports: [
     TypeOrmModule.forRoot({
-      type: 'mysql',
+      type: 'mongodb',
       host: 'localhost',
-      port: 3306,
-      username: 'root',
-      password: 'root',
+      port: 27017,
       database: 'school',
       entities: [Lesson, Student],
-      synchronize: true,
+      //synchronize: true,
+      useUnifiedTopology: true,
     }),
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,

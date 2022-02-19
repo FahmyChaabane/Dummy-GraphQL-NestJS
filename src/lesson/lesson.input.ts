@@ -15,5 +15,5 @@ export class CreateLessonInput {
   endDate: string;
 
   @Field(() => [ID], { defaultValue: [] })
-  studentIds: number[];
+  students: ObjectID[];
 }
